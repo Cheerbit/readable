@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Icon, Layout, Select } from 'antd';
 import { fetchSinglePost } from '../actions/postActions';
@@ -41,7 +42,13 @@ class PostContainer extends Component {
 
   componentDidMount() {
     const { post_id: postId } = this.props.match.params;
-    this.props.dispatch(fetchSinglePost(postId));
+    this.props.dispatch(fetchSinglePost(postId))
+      .then(payload => {
+        const { data } = payload;
+        if (_.isEmpty(data)) {
+          this.props.history.replace('/notfound');
+        }
+      });
     this.props.dispatch(fetchAllComments(postId));
   }
 
